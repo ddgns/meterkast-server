@@ -14,8 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+import DataCollection.worker as worker
 
 urlpatterns = [
+    path('', include('Frontend.urls')),
+    path('api/', include('DataCollection.urls')),
     path('admin/', admin.site.urls),
 ]
+
+# add a scheduled task to run the data collection script every 5 seconds
+
+collector = worker.collector()
+collector.start()
