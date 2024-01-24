@@ -41,8 +41,8 @@ class collector:
         c.execute("INSERT INTO DataTypes VALUES (0, 'verbruik stand', 'kWh')")
         c.execute("INSERT INTO DataTypes VALUES (1, 'lever stand', 'kWh')")
 
-        c.execute("INSERT INTO DataTypes VALUES (2, 'verbruik', 'kWh')")
-        c.execute("INSERT INTO DataTypes VALUES (3, 'leveren', 'kWh')")
+        c.execute("INSERT INTO DataTypes VALUES (2, 'verbruik', 'kW')")
+        c.execute("INSERT INTO DataTypes VALUES (3, 'leveren', 'kW')")
 
         c.execute("INSERT INTO DataTypes VALUES (4, 'aardgas', 'm3')")
         conn.commit()
