@@ -43,13 +43,17 @@ class Reader:
         while True:
             line = self.ser.readline().decode().strip()
 
-            # check if the current line is in the translation table
-            if line in self.translation_table:
-                # get the value from the line
-                value = line.split('(')[1].split('*')[0]
-                self.value_store[self.translation_table[line]] = value
-
-                print(self.value_store)
+            # check if any of the keys in the translation table are in the line
+            if any(key in line for key in self.translation_table.keys()):
+                # check if the value is gas
+                if '0-1:24.2.1' in line:
+                    value = line.split('(')[2].split('*')[0]
+                else:
+                    # get the value from the line
+                    value = line.split('(')[1].split('*')[0]
+                    # translate the code to the name of the value
+                code = line.split('(')[0].strip()
+                self.value_store[self.translation_table[code]] = value
 
 class collector:
     instance = None
