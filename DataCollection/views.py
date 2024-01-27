@@ -12,4 +12,6 @@ def DataList(request):
     return HttpResponse('List of all data')
 
 def Latest(request):
-    return HttpResponse(collector.reader.value_store)
+    # convert the dictionary to a JSON string and return it
+    json = str(collector.reader.value_store).replace("'", '"')
+    return HttpResponse(json)
