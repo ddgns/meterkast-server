@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import DataCollection.worker as worker
+from django.http import JsonResponse
 
 # add a scheduled task to run the data collection script every 5 seconds
 collector = worker.collector()
@@ -12,6 +13,4 @@ def DataList(request):
     return HttpResponse('List of all data')
 
 def Latest(request):
-    # convert the dictionary to a JSON string and return it
-    json = str(collector.reader.value_store).replace("'", '"')
-    return HttpResponse(json)
+    return JsonResponse(collector.reader.value_store)
