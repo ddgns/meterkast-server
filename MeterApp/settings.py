@@ -25,7 +25,9 @@ SECRET_KEY = 'ts-l-l1nvd6cj-4*39ubac%o@teij1frf-^+ztzur8wm)7g4r5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "meterkast"
+]
 
 
 # Application definition
