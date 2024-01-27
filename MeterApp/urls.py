@@ -22,8 +22,3 @@ urlpatterns = [
     path('api/', include('DataCollection.urls')),
     path('admin/', admin.site.urls),
 ]
-
-# add a scheduled task to run the data collection script every 5 seconds
-
-collector = worker.collector()
-collector.start()
