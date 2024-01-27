@@ -1,11 +1,61 @@
 import time
 import threading
 import sqlite3
+import serial
+
+# environment variables can be set in .env file by using the following format:
+# VARIABLE_NAME=VARIABLE_VALUE
+# example:
+# port=/tes/tport123
+# baudrate=123456
+
+# # read all environment variables from .env file
+environment_variables = {}
+with open('.env') as f:
+    for line in f:
+        if line[0] != '#':
+            key, value = line.split('=')
+            environment_variables[key] = value.strip()
+
+
+class Reader:
+    port = None
+    baudrate = None
+    ser = None
+    value_store = {}
+    translation_table = {
+        '1-0:1.8.1': 'verbruik stand',
+        '1-0:1.8.2': 'verbruik stand',
+        '1-0:2.8.1': 'lever stand',
+        '1-0:2.8.2': 'lever stand',
+        '1-0:1.7.0': 'verbruik',
+        '1-0:2.7.0': 'leveren',
+        '0-1:24.2.1': 'aardgas'
+    }
+    
+    def __init__(self, port, baudrate):
+        self.port = port
+        self.baudrate = baudrate
+        self.ser = serial.Serial(port, baudrate)
+    
+    # function that continuously reads data from the serial port and keeps the connection open
+    def read_continuously(self):
+        while True:
+            line = self.ser.readline().decode().strip()
+
+            # check if the current line is in the translation table
+            if line in self.translation_table:
+                # get the value from the line
+                value = line.split('(')[1].split('*')[0]
+                self.value_store[self.translation_table[line]] = value
+
+                print(self.value_store)
 
 class collector:
     instance = None
     database = "data.db" # TODO: use the existing database instead of creating a new one
-    
+    reader = Reader(environment_variables['port'], environment_variables['baudrate'])
+
     def __init__(self):
         # create the database if it doesn't exist
         conn = sqlite3.connect(self.database)
@@ -27,11 +77,9 @@ class collector:
         thread.start()
 
     def collect(self):
-        while True:
-            print("Collecting data...") # TODO: create a function that actually collects data
-            time.sleep(5)
-            self.store_data()
-
+        # start reading data from the serial port
+        self.reader.read_continuously()
+        
     def store_data(self):
         pass
 
@@ -47,3 +95,4 @@ class collector:
         c.execute("INSERT INTO DataTypes VALUES (4, 'aardgas', 'm3')")
         conn.commit()
         conn.close()
+            
