@@ -21,10 +21,10 @@
             fetch('/api/latest', { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('verbruikstand').innerText = data["verbruik stand 1"] + data["verbruik stand 2"];
-                    document.getElementById('leverstand').innerText = data["lever stand 1"] + data["lever stand 2"];
-                    document.getElementById('vermogen').innerText = valudata_store["verbruik"] - data["leveren"];
-                    document.getElementById('gas').innerText = data["aardgas"];
+                    document.getElementById('verbruikstand').innerText = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
+                    document.getElementById('leverstand').innerText = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
+                    document.getElementById('vermogen').innerText = parseFloat(data["verbruik"]) - parseFloat(data["leveren"]);
+                    document.getElementById('gas').innerText = parseFloat(data["aardgas"]);
                 })
                 .catch(error => console.error('Error fetching dashboard data:', error));
         }
