@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from worker import collector
+import DataCollection.worker as worker
 
 # Create your views here.
 def index(request):
     # get the latest data from the worker
-    collector_instance = collector()
+    collector_instance = worker.collector()
     value_store = collector_instance.reader.value_store
     data = {
         "verbruikstand": value_store["verbruik stand 1"] + value_store["verbruik stand 2"],
