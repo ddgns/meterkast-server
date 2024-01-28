@@ -3,14 +3,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Frontend</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Frontend</h1>
-        <p>Frontend</p>
+        <h1>Dashboard</h1>
+        <p>Number 1: {{ verbruikstand }}</p>
+        <p>Number 2: {{ leverstand }}</p>
+        <p>Number 3: {{ vermogen }}</p>
+        <p>Number 4: {{ gas }}</p>
     </div>
+
+    <script>
+        // Function to update dashboard values using AJAX
+        function updateDashboardValues() {
+            fetch('/api/latest', { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('verbruikstand').innerText = data["verbruik stand 1"] + data["verbruik stand 2"];
+                    document.getElementById('leverstand').innerText = data["lever stand 1"] + data["lever stand 2"];
+                    document.getElementById('vermogen').innerText = valudata_store["verbruik"] - data["leveren"];
+                    document.getElementById('gas').innerText = data["aardgas"];
+                })
+                .catch(error => console.error('Error fetching dashboard data:', error));
+        }
+
+        // Periodically update dashboard values (every 5 seconds in this example)
+        setInterval(updateDashboardValues, 5000);
+
+        // Initial update on page load
+        updateDashboardValues();
+    </script>
 </body>
 </html>
 

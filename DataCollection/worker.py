@@ -56,7 +56,7 @@ class Reader:
                 self.value_store[self.translation_table[code]] = value
 
 class collector:
-    instance = None
+    _instance = None
     database = "data.db" # TODO: use the existing database instead of creating a new one
     reader = Reader(environment_variables['port'], environment_variables['baudrate'])
 
@@ -68,11 +68,11 @@ class collector:
         c.execute("CREATE TABLE IF NOT EXISTS DataTypes (type INTEGER, name TEXT, unit TEXT)")
         conn.commit()
         conn.close()
-
-        # make sure only one instance of the collector is running
-        if collector.instance is not None:
-            raise Exception("Only one instance of the collector can be running at a time")
-        collector.instance = self
+        
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Singleton, cls).__new__(cls)
+        return cls._instance
 
     def start(self):
         # create a thread that will run in the background and collect data
