@@ -26,7 +26,7 @@ SECRET_KEY = 'ts-l-l1nvd6cj-4*39ubac%o@teij1frf-^+ztzur8wm)7g4r5'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "meterkast"
+    "*"
 ]
 
 
