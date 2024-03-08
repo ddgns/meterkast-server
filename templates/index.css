@@ -1,0 +1,228 @@
+/* add default colors */
+:root {
+  --color-primary: #03DAC6;
+  --color-secondary: ;
+  --color-success: #27BB65;
+  --color-info: #ff9800;
+  --color-warning: #CF6679;
+  --color-background: #000000;
+  --color-card: rgba(255, 255, 255, 0.16);
+  --gap: 4px;
+}
+
+img {
+  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-filter: invert(100%);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 500;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  /* Use Roboto font, a standard Material Design font */
+  background-color: var(--color-background);
+  /* Set the default background color */
+  color: white;
+  /* Set the default text color */
+}
+
+div {
+  border-radius: 16px;
+}
+
+span {
+  margin-right: 4px;
+  display: block
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-size: 2vw;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "jaar-grafiek jaar-grafiek jaar-grafiek weer weer weer"
+    "dag-waardes dag-waardes vermogen vermogen dag-grafiek dag-grafiek";
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  gap: var(--gap);
+}
+
+.vermogen {
+  grid-area: vermogen;
+  background-color: var(--color-card);
+  gap: var(--gap);
+}
+
+.dag-grafiek {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "meterstand"
+    "gasstand";
+  grid-area: dag-grafiek;
+  gap: var(--gap);
+}
+
+.meterstand {
+  grid-area: meterstand;
+  background-color: var(--color-card);
+  gap: var(--gap);
+}
+
+.gasstand {
+  grid-area: gasstand;
+  background-color: var(--color-card);
+  gap: var(--gap);
+}
+
+.dag-waardes {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-area: dag-waardes;
+  grid-template-areas:
+    "lever"
+    "verbruik"
+  ;
+  overflow: hidden;
+  background-color: var(--color-card);
+  gap: var(--gap);
+}
+
+.lever {
+  grid-area: lever;
+  gap: var(--gap);
+}
+
+.verbruik {
+  grid-area: verbruik;
+  gap: var(--gap);
+}
+
+.jaar-grafiek {
+  grid-area: jaar-grafiek;
+  overflow: hidden;
+  background-color: var(--color-card);
+}
+
+.weer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--gap);
+  grid-template-areas:
+    "temperatuur tijd info-1"
+    "zon-op-onder zon info-2";
+  grid-area: weer;
+}
+
+.tijd {
+  grid-area: tijd;
+  background-color: var(--color-card);
+}
+
+.zon {
+  grid-area: zon;
+  background-color: var(--color-card);
+}
+
+.info-1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--gap);
+  grid-template-areas:
+    "vocht wind";
+  grid-area: info-1;
+}
+
+.vocht {
+  grid-area: vocht;
+  background-color: var(--color-card);
+}
+
+.wind {
+  grid-area: wind;
+  background-color: var(--color-card);
+}
+
+.info-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--gap);
+  grid-template-areas:
+    "lumen zicht";
+  grid-area: info-2;
+}
+
+.straling {
+  grid-area: lumen;
+  background-color: var(--color-card);
+}
+
+.zicht {
+  grid-area: zicht;
+  background-color: var(--color-card);
+}
+
+.temperatuur {
+  grid-area: temperatuur;
+  background-color: var(--color-card);
+}
+
+.zon-op-onder {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "op"
+    "onder";
+  grid-area: zon-op-onder;
+}
+
+.op {
+  grid-area: op;
+  background-color: var(--color-card);
+  border-radius: 16px 16px 0px 0px;
+  border-bottom: var(--gap) solid var(--color-background);
+}
+
+.onder {
+  grid-area: onder;
+  background-color: var(--color-card);
+  border-radius: 0px 0px 16px 16px;
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+</head>
+<body>
+  <div class="container">
+    <div class="vermogen centered">
+      <span class="material-symbols-outlined">
+        bolt
+      </span>
+    </div>
+    <div class="dag-grafiek">
+      <div class="meterstand centered">
+        <span class="material-symbols-outlined">
+          speed
+        </span>
+      </div>
+      <div class="gasstand centered">
+        <span class="material-symbols-outlined">
+          propane_tank
+        </span>
+      </div>
+    </div>
+    <div class="dag-waardes" id="dag-waardes">
+      <svg id="day-chart"></svg>
+    </div>
+    <div class="jaar-grafiek" id="jaar-grafiek"><svg id="chart"></svg></div>
+    <div class="weer">
+      <div class="tijd centered">
+        <span class="material-symbols-outlined">
+          schedule
+        </span>
+      </div>
+      <div class="zon centered">
+        <img src="" id="weer-afbeelding" />
+      </div>
+      <div class="info-1">
+        <div class="vocht centered">
+          <span class="material-symbols-outlined">
+            water_drop
+          </span>
+        </div>
+        <div class="wind centered">
+          <span class="material-symbols-outlined">
+            airwave
+          </span>
+        </div>
+      </div>
+      <div class="info-2">
+        <div class="straling centered">
+          <span class="material-symbols-outlined">
+            rainy_light
+          </span>
+        </div>
+        <div class="zicht centered">
+          <span class="material-symbols-outlined">
+            visibility
+          </span>
+        </div>
+      </div>
+      <div class="temperatuur centered">
+        <span class="material-symbols-outlined">
+          thermometer
+        </span>
+      </div>
+      <div class="zon-op-onder">
+        <div class="op centered">
+          <span class="material-symbols-outlined">
+            sunny
+          </span>
+        </div>
+        <div class="onder centered">
+          <span class="material-symbols-outlined">
+            dark_mode
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="module">
+  import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+  let vermogen = document.querySelector('.vermogen').lastChild;
+  let meterstand = document.querySelector('.meterstand').lastChild;
+  let gasstand = document.querySelector('.gasstand').lastChild;
+  let lever = document.querySelector('.lever');
+  let verbruik = document.querySelector('.verbruik');
+  let jaarGrafiek = document.querySelector('.jaar-grafiek');
+  let tijd = document.querySelector('.tijd').lastChild;
+  let zon = document.querySelector('#weer-afbeelding');
+  let vocht = document.querySelector('.vocht').lastChild;
+  let wind = document.querySelector('.wind').lastChild;
+  let straling = document.querySelector('.straling').lastChild;
+  let zicht = document.querySelector('.zicht').lastChild;
+  let temperatuur = document.querySelector('.temperatuur').lastChild;
+  let zonOp = document.querySelector('.op').lastChild;
+  let zonOnder = document.querySelector('.onder').lastChild;
+
+
+  function updateMeterstand() {
+    let meterData = fetch("/api/latest").then((res) => {
+      return res.json();
+    }).then((data) => {
+      vermogen.textContent = parseFloat(data["verbruik"]) + "\nWatt";
+      if (parseFloat(data["verbruik"]) >= 0) {
+        vermogen.parentElement.style.color = "var(--color-success)";
+      } else {
+        vermogen.parentElement.style.color = "var(--color-warning)";
+      }
+      let geleverd = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
+      let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
+      meterstand.textContent = verbruikt - geleverd + " kWh";
+      gasstand.textContent = parseFloat(data["aardgas"])+ " m3";
+    })
+  }
+
+  function updateWeer() {
+    let weerData = fetch("/api/weather").then((res) => {
+      return res.json();
+    }).then((data) => data[0])
+    .then((data) => {
+      temperatuur.textContent = data.temp+"°C";
+      zonOp.textContent = data.sup;
+      zonOnder.textContent = data.sunder;
+      zon.src = "/images/"+data.image
+      wind.textContent = data.windms + "m/s";
+      vocht.textContent = data.lv + "%";
+      zicht.textContent = data.zicht + "\nkm";
+      straling.textContent = data.gr + "\nW/m2";
+    })
+  }
+
+  function updateTimer() {
+    var d = new Date();
+    tijd.textContent = d.getHours()+":"+ (d.getMinutes()<10? "0": "") +d.getMinutes()+":"+ (d.getSeconds()<10? "0": "") +d.getSeconds()
+  }
+  // Generate data for the last 12 months
+  var currentDate = new Date();
+  var twelveMonthsAgo = new Date(currentDate);
+  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 11); // Subtract 11 to include the current month
+
+  var timeData = d3.timeMonth.range(twelveMonthsAgo, currentDate, 1);
+
+  // Generate example data for each month
+  var graphData = timeData.map(function (month) {
+      // Generate a random value between 10 and 50
+      var randomValue = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
+
+      return [month, randomValue];
+  });
+
+  // Update chart on window resize
+  window.addEventListener("resize", yearChart);
+  window.addEventListener("load", yearChart);
+
+  window.addEventListener("resize", dayChart);
+  window.addEventListener("load", dayChart);
+
+  function createChart(margin, width, height, data, container) {
+    // Create responsive line chart based on time-based data
+    var xScale = d3.scaleTime()
+        .domain(d3.extent(graphData, function(d) { return d[0]; }))
+        .range([0, width]);
+
+    var yScale = d3.scaleLinear()
+        .domain([0, d3.max(graphData, function(d) { return d[1]; })])
+        .range([height, 0]);
+
+    var line = d3.line()
+        .x(function(d) { return xScale(d[0]); })
+        .y(function(d) { return yScale(d[1]); });
+
+    // Create SVG element with a group for margins
+    var svg = container
+      .attr("preserveAspectRatio", "xMinYMin meet") // Set aspect ratio preservation
+      .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append("path")
+      .data([graphData])
+      .attr("class", "line")
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke-width", "3px")
+      .attr("stroke", "white"); // Sample color
+
+    // Add axes
+    var xAxis = d3.axisBottom(xScale);
+    var yAxis = d3.axisLeft(yScale);
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .call(yAxis);
+  }
+
+  function dayChart() {
+    var container = d3.select("#day-chart")
+    container.selectAll("*").remove();
+
+    // Set up initial dimensions
+    var margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    var width = parseInt(d3.select("#dag-waardes").style("width")) - margin.left - margin.right;
+    var height = parseInt(d3.select("#dag-waardes").style("height")) - margin.left - margin.right;
+
+    // Create chart
+    createChart(margin, width, height, graphData, container);
+
+  }
+
+  function yearChart() {
+    // Remove old chart
+    var container = d3.select("#chart");
+    container.selectAll("*").remove();
+    
+    // Set up initial dimensions
+    var margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    var width = parseInt(d3.select("#jaar-grafiek").style("width")) - margin.left - margin.right;
+    var height = parseInt(d3.select("#jaar-grafiek").style("height")) - margin.left - margin.right;
+
+    // Create chart
+    createChart(margin, width, height, graphData, container);
+  }
+  
+  updateMeterstand();
+  updateWeer();
+  updateTimer();
+  setInterval(updateMeterstand, 5000);
+  setInterval(updateWeer, 90000);
+  setInterval(updateTimer, 1000)
+</script>
+</html>
