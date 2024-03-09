@@ -49,4 +49,4 @@ class api:
 
     def run():
         api.collector.start()
-        api.app.run()
+        api.app.run(host='0.0.0.0', port=80)
