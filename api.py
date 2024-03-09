@@ -49,4 +49,4 @@ class api:
 
     def run():
         api.collector.start()
-        api.app.run(debug=True)
+        api.app.run()
