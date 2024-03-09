@@ -66,6 +66,7 @@ class Reader:
                 self.value_store[self.translation_table[code]] = value
 
     def get_weather_data(self):
+        print(self.weather_api_url)
         res = requests.get(self.weather_api_url)
         self.weather_data = res.json()['liveweer'][0]
         
