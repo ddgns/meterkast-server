@@ -22,8 +22,8 @@ with open('.env') as f:
 class Reader:
     port = None
     baudrate = None
-    api_key = None
-    location = None
+    api_key = environment_variables['api_key']
+    location = environment_variables['location']
     weather_api_url = f"https://weerlive.nl/api/weerlive_api_v2.php?key={api_key}&locatie={location}"
     ser = None
     value_store = {}
@@ -66,7 +66,6 @@ class Reader:
                 self.value_store[self.translation_table[code]] = value
 
     def get_weather_data(self):
-        print(self.weather_api_url)
         res = requests.get(self.weather_api_url)
         self.weather_data = res.json()['liveweer'][0]
         
