@@ -111,10 +111,11 @@
       let verbruik = parseFloat(data["verbruik"])
       let leveren = parseFloat(data["leveren"]);
 
-      if (verbruik >= 0) {
+      if (verbruik > 0) {
         vermogen.textContent = parseFloat(data["verbruik"])*1000 + "\nWatt";
         vermogen.parentElement.style.color = "var(--color-warning)";
-      } else {
+      }
+      if (leveren > 0) {
         vermogen.textContent = parseFloat(data["leveren"])*1000 + "\nWatt";
         vermogen.parentElement.style.color = "var(--color-success)";
       }
