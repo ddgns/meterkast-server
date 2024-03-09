@@ -74,7 +74,7 @@ class collector:
 
     def __init__(self):
         # create a reader object
-        Reader(environment_variables['port'], environment_variables['baudrate'], environment_variables['api_key'], environment_variables['location'])
+        reader = Reader(environment_variables['port'], environment_variables['baudrate'], environment_variables['api_key'], environment_variables['location'])
         # create the database if it doesn't exist
         conn = sqlite3.connect(self.database)
         c = conn.cursor()
