@@ -94,7 +94,7 @@ class collector:
         thread.daemon = True
         thread.start()
 
-        thread_weather = threading.Thread(target=self.collect_weather)
+        thread_weather = threading.Thread(target=self.update_weather_data)
         thread_weather.daemon = True
         thread_weather.start()
 
