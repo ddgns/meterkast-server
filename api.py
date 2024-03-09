@@ -4,7 +4,7 @@ import mock_worker
 import random
 
 class api:
-    debug = True
+    debug = False
     app = Flask(__name__)
 
     if debug:
