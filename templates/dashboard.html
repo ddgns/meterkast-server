@@ -130,8 +130,7 @@
   function updateWeer() {
     let weerData = fetch("/api/weather").then((res) => {
       return res.json();
-    }).then((data) => data[0])
-    .then((data) => {
+    }).then((data) => {
       temperatuur.textContent = data.temp+"°C";
       zonOp.textContent = data.sup;
       zonOnder.textContent = data.sunder;
