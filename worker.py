@@ -48,8 +48,11 @@ class Reader:
     # function that continuously reads data from the serial port and keeps the connection open
     def read_continuously(self):
         while True:
-            line = self.ser.readline().decode().strip()
-
+            try:
+                line = self.ser.readline().decode().strip()
+            except:
+                continue
+            
             # check if any of the keys in the translation table are in the line
             if any(key in line for key in self.translation_table.keys()):
                 # check if the value is gas
@@ -70,11 +73,9 @@ class Reader:
 class collector:
     _instance = None
     database = "data.db" # TODO: use the existing database instead of creating a new one
-    reader = None
+    reader = Reader(environment_variables['port'], environment_variables['baudrate'], environment_variables['api_key'], environment_variables['location'])
 
     def __init__(self):
-        # create a reader object
-        self.reader = Reader(environment_variables['port'], environment_variables['baudrate'], environment_variables['api_key'], environment_variables['location'])
         # create the database if it doesn't exist
         conn = sqlite3.connect(self.database)
         c = conn.cursor()
