@@ -108,12 +108,17 @@
     let meterData = fetch("/api/latest").then((res) => {
       return res.json();
     }).then((data) => {
-      vermogen.textContent = parseFloat(data["verbruik"]) + "\nWatt";
-      if (parseFloat(data["verbruik"]) >= 0) {
-        vermogen.parentElement.style.color = "var(--color-success)";
-      } else {
+      verbruik = parseFloat(data["verbruik"])
+      leveren = parseFloat(data["leveren"]);
+
+      if (verbruik >= 0) {
+        vermogen.textContent = parseFloat(data["verbruik"])*1000 + "\nWatt";
         vermogen.parentElement.style.color = "var(--color-warning)";
+      } else {
+        vermogen.textContent = parseFloat(data["leveren"])*1000 + "\nWatt";
+        vermogen.parentElement.style.color = "var(--color-success)";
       }
+      
       let geleverd = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
       let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
       meterstand.textContent = verbruikt - geleverd + " kWh";
