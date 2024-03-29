@@ -104,6 +104,10 @@
   let zonOnder = document.querySelector('.onder').lastChild;
 
 
+  function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+
   function updateMeterstand() {
     let meterData = fetch("/api/latest").then((res) => {
       return res.json();
@@ -123,7 +127,8 @@
       let geleverd = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
       let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
       meterstand.textContent = verbruikt - geleverd + " kWh";
-      gasstand.textContent = parseFloat(data["aardgas"])+ " m3";
+      let gasstandWaarde = round(parseFloat(data["aardgas"]), 2);
+      gasstand.textContent = gasstandWaarde + " m3";
     })
   }
 
