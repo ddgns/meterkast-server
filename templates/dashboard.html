@@ -126,7 +126,7 @@
 
       let geleverd = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
       let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
-      meterstand.textContent = verbruikt - geleverd + " kWh";
+      meterstand.textContent = round(verbruikt - geleverd, 2) + " kWh";
       let gasstandWaarde = round(parseFloat(data["aardgas"]), 2);
       gasstand.textContent = gasstandWaarde + " m3";
     })
