@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import worker
-import mock_worker
 import random
 
 class api:
