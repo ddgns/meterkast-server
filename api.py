@@ -4,13 +4,8 @@ import mock_worker
 import random
 
 class api:
-    debug = False
     app = Flask(__name__)
-
-    if debug:
-        collector = mock_worker.collector()
-    else:
-        collector = worker.collector()
+    collector = worker.collector()
 
     @app.route('/', methods=['GET'])
     def index():
