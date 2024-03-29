@@ -2,6 +2,7 @@ import time
 import threading
 import sqlite3
 import serial
+import requests
 
 # environment variables can be set in .env file by using the following format:
 # VARIABLE_NAME=VARIABLE_VALUE
@@ -21,8 +22,12 @@ with open('.env') as f:
 class Reader:
     port = None
     baudrate = None
+    api_key = environment_variables['api_key']
+    location = environment_variables['location']
+    weather_api_url = f"https://weerlive.nl/api/weerlive_api_v2.php?key={api_key}&locatie={location}"
     ser = None
     value_store = {}
+    weather_data = {}
     translation_table = {
         '1-0:1.8.1': 'verbruik stand 1',
         '1-0:1.8.2': 'verbruik stand 2',
@@ -33,16 +38,21 @@ class Reader:
         '0-1:24.2.1': 'aardgas'
     }
     
-    def __init__(self, port, baudrate):
+    def __init__(self, port, baudrate, api_key, location):
         self.port = port
         self.baudrate = baudrate
         self.ser = serial.Serial(port, baudrate)
+        self.api_key = api_key
+        self.location = location
     
     # function that continuously reads data from the serial port and keeps the connection open
     def read_continuously(self):
         while True:
-            line = self.ser.readline().decode().strip()
-
+            try:
+                line = self.ser.readline().decode().strip()
+            except:
+                continue
+            
             # check if any of the keys in the translation table are in the line
             if any(key in line for key in self.translation_table.keys()):
                 # check if the value is gas
@@ -55,10 +65,15 @@ class Reader:
                 code = line.split('(')[0].strip()
                 self.value_store[self.translation_table[code]] = value
 
+    def get_weather_data(self):
+        res = requests.get(self.weather_api_url)
+        self.weather_data = res.json()['liveweer'][0]
+        
+
 class collector:
     _instance = None
     database = "data.db" # TODO: use the existing database instead of creating a new one
-    reader = Reader(environment_variables['port'], environment_variables['baudrate'])
+    reader = Reader(environment_variables['port'], environment_variables['baudrate'], environment_variables['api_key'], environment_variables['location'])
 
     def __init__(self):
         # create the database if it doesn't exist
@@ -80,9 +95,18 @@ class collector:
         thread.daemon = True
         thread.start()
 
+        thread_weather = threading.Thread(target=self.update_weather_data)
+        thread_weather.daemon = True
+        thread_weather.start()
+
     def collect(self):
         # start reading data from the serial port
         self.reader.read_continuously()
+
+    def update_weather_data(self):
+        while True:
+            self.reader.get_weather_data()
+            time.sleep(90)
         
     def store_data(self):
         pass
