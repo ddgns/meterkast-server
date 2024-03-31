@@ -130,7 +130,7 @@
       let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
       meterstand.textContent = round(verbruikt - geleverd, 2) + " kWh";
       let gasstandWaarde = round(parseFloat(data["aardgas"]), 2);
-      gasstand.textContent = gasstandWaarde + " m3";
+      gasstand.textContent = gasstandWaarde + " m³";
     })
   }
 
@@ -145,7 +145,7 @@
       wind.textContent = data.windms + "m/s";
       vocht.textContent = data.lv + "%";
       zicht.textContent = data.zicht + "\nm";
-      straling.textContent = data.gr + "\nW/m2";
+      straling.textContent = data.gr + "\nW/m²";
     })
   }
 
