@@ -26,7 +26,8 @@ class api:
         
     @app.route('/api/latest', methods=['GET'])
     def latest():
-        return jsonify(api.collector.reader.value_store)
+        return jsonify({"huidige_waardes": api.collector.reader.value_store, 
+        "begin_waardes": api.collector.reader.first_value_store })
     
     @app.route('/api/weather', methods=['GET'])
     def weather():

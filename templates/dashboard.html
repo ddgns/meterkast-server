@@ -112,6 +112,7 @@
     let meterData = fetch("/api/latest").then((res) => {
       return res.json();
     }).then((data) => {
+      data = data["huidige_waardes"]
       let verbruik = parseFloat(data["verbruik"])
       let leveren = parseFloat(data["leveren"]);
 
@@ -123,6 +124,7 @@
         vermogen.textContent = parseFloat(data["leveren"])*1000 + "\nW";
         vermogen.parentElement.style.color = "var(--color-success)";
       }
+
 
       let geleverd = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
       let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
@@ -142,7 +144,7 @@
       zon.src = "/images/"+data.image
       wind.textContent = data.windms + "m/s";
       vocht.textContent = data.lv + "%";
-      zicht.textContent = data.zicht + "\nkm";
+      zicht.textContent = data.zicht + "\nm";
       straling.textContent = data.gr + "\nW/m2";
     })
   }

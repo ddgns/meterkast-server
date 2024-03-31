@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 import threading
 import sqlite3
 import serial
@@ -26,7 +27,10 @@ class Reader:
     location = environment_variables['location']
     weather_api_url = f"https://weerlive.nl/api/weerlive_api_v2.php?key={api_key}&locatie={location}"
     ser = None
+    newdayflag = False
+    yearday = -1
     value_store = {}
+    first_value_store = {}
     weather_data = {}
     translation_table = {
         '1-0:1.8.1': 'verbruik stand 1',
@@ -44,6 +48,8 @@ class Reader:
         self.ser = serial.Serial(port, baudrate)
         self.api_key = api_key
         self.location = location
+        #self.yearday = datetime.now().timetuple().tm_yday
+        self.newdayflag = False
     
     # function that continuously reads data from the serial port and keeps the connection open
     def read_continuously(self):
@@ -58,12 +64,23 @@ class Reader:
                 # check if the value is gas
                 if '0-1:24.2.1' in line:
                     value = line.split('(')[2].split('*')[0]
+                    # First time of day set new day flag to store begin values
+                    if (self.yearday != datetime.now().timetuple().tm_yday):
+                        self.newdayflag = True
+                        self.yearday = datetime.now().timetuple().tm_yday
+                    else:
+                        self.newdayflag = False
                 else:
                     # get the value from the line
                     value = line.split('(')[1].split('*')[0]
                     # translate the code to the name of the value
                 code = line.split('(')[0].strip()
                 self.value_store[self.translation_table[code]] = value
+                if(self.newdayflag and code != '1-0:1.7.0' and code != '1-0:2.7.0'):
+                    # exclude power measurements
+                    self.first_value_store[self.translation_table[code]] = value
+                    
+                    
 
     def get_weather_data(self):
         res = requests.get(self.weather_api_url)
