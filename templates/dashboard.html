@@ -112,24 +112,30 @@
     let meterData = fetch("/api/latest").then((res) => {
       return res.json();
     }).then((data) => {
-      data = data["huidige_waardes"]
-      let verbruik = parseFloat(data["verbruik"])
-      let leveren = parseFloat(data["leveren"]);
+      //data = data["huidige_waardes"]
+      let verbruik = parseFloat(data["huidige_waardes"]["verbruik"])
+      let leveren = parseFloat(data["huidige_waardes"]["leveren"]);
 
       if (verbruik > 0) {
-        vermogen.textContent = parseFloat(data["verbruik"])*1000 + "\nW";
+        vermogen.textContent = parseFloat(data["huidige_waardes"]["verbruik"])*1000 + "\nW";
         vermogen.parentElement.style.color = "var(--color-warning)";
       }
       if (leveren > 0) {
-        vermogen.textContent = parseFloat(data["leveren"])*1000 + "\nW";
+        vermogen.textContent = parseFloat(data["huidige_waardes"]["leveren"])*1000 + "\nW";
         vermogen.parentElement.style.color = "var(--color-success)";
       }
 
 
-      let geleverd = parseFloat(data["lever stand 1"]) + parseFloat(data["lever stand 2"]);
-      let verbruikt = parseFloat(data["verbruik stand 1"]) + parseFloat(data["verbruik stand 2"]);
+      let geleverd = parseFloat(data["huidige_waardes"]["lever stand 1"]) + 
+                    parseFloat(data["huidige_waardes"]["lever stand 2"]) -
+                    parseFloat(data["begin_waardes"]["lever stand 1"]) -
+                    parseFloat(data["begin_waardes"]["lever stand 2"]);
+      let verbruikt = parseFloat(data["huidige_waardes"]["verbruik stand 1"]) + 
+                    parseFloat(data["huidige_waardes"]["verbruik stand 2"]) -
+                    parseFloat(data["begin_waardes"]["verbruik stand 1"]) -
+                    parseFloat(data["begin_waardes"]["verbruik stand 2"]);
       meterstand.textContent = round(verbruikt - geleverd, 2) + " kWh";
-      let gasstandWaarde = round(parseFloat(data["aardgas"]), 2);
+      let gasstandWaarde = round(parseFloat(data["huidige_waardes"]["aardgas"]), 2);
       gasstand.textContent = gasstandWaarde + " m³";
     })
   }
