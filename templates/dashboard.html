@@ -136,7 +136,9 @@
                     parseFloat(data["begin_waardes"]["verbruik stand 2"]);
       meterstand.textContent = round(verbruikt - geleverd, 2) + " kWh";
       let gasstandWaarde = round(parseFloat(data["huidige_waardes"]["aardgas"]), 2);
-      gasstand.textContent = gasstandWaarde + " m³";
+      let gasVerbruikt = round(parseFloat(data["huidige_waardes"]["aardgas"]) -
+                    parseFloat(data["begin_waardes"]["aardgas"]), 3);
+      gasstand.textContent = gasVerbruikt + " m³";
     })
   }
 
